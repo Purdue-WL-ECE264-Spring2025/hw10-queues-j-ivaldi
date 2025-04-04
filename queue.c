@@ -23,19 +23,15 @@ return deserialize(ser);
 }
 
 int beenherebefore(struct linked_list *donehad, struct game_state at) {
-    
     uint64_t serq = serialize(at);
-  
     struct list_node *curcheck = donehad->head;
-  
-    curcheck = donehad->head;
-  
-    while(curcheck != NULL){
-        if(curcheck->value == serq){
-            return 0;
+
+    while (curcheck != NULL) {
+        if (curcheck->value == serq) {
+            return 1;
         }
         curcheck = curcheck->next;
-    } 
+    }
     return 0;
 }
 
