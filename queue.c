@@ -100,6 +100,9 @@ int number_of_moves(struct game_state start) {
             enqueue(&q, r);
             insert_at_tail(&check, serialize(r));
         }
+        if(cur.num_steps > 100){
+            break;
+        }
     }
     return -1;
 }
