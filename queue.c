@@ -64,8 +64,8 @@ int number_of_moves(struct game_state start) {
       
         cur = dequeue(&q);
         if (checkfun(corser ,cur)) {
-            free_list(&q.data);
-            free_list(&check);
+            free_list(q.data);
+            free_list(check);
             return cur.num_steps;
         }
         
