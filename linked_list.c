@@ -2,88 +2,80 @@
 
 #include <stdlib.h>
 
-struct list_node *new_node(size_t value) {
-    struct list_node *node = (struct list_node *)malloc(sizeof(struct list_node));
-    if (!node) return NULL;
-    node->value = value;
-    node->next = NULL;
-    return node;
+struct list_node *new_node(size_t value) { return NULL; 
 }
 
-// Inserts a node at the head of the list
 void insert_at_head(struct linked_list *list, size_t value) {
-    struct list_node *new_node = (struct list_node *)malloc(sizeof(struct list_node));
-    if (!new_node) return;
+  
+  struct list_node *new_node = (struct list_node *)malloc(sizeof(struct list_node));
+  new_node->value = value;
+  new_node->next = list->head;
+  list->head = new_node;
 
-    new_node->value = value;
-    new_node->next = list->head;
-    list->head = new_node;
+
 }
 
-// Inserts a node at the tail of the list
 void insert_at_tail(struct linked_list *list, size_t value) {
-    struct list_node *new_node = (struct list_node *)malloc(sizeof(struct list_node));
-    if (!new_node) return;
+  
+  struct list_node *new_node = (struct list_node *)malloc(sizeof(struct list_node));
+  new_node->value = value;
 
-    new_node->value = value;
+  if (list->head == NULL) {
+    list->head = new_node;
     new_node->next = NULL;
+    return;
+  }
 
-    if (list->head == NULL) {
-        list->head = new_node;
-        return;
-    }
 
-    struct list_node *traverse = list->head;
-    while (traverse->next != NULL) {
-        traverse = traverse->next;
-    }
-    traverse->next = new_node;
+  struct list_node *traverse = list->head;
+  while(list->head != NULL){
+    traverse = traverse->next;
+  }
+  new_node->value = value;
+  traverse->next = new_node;
+  new_node->next = NULL;
+  
 }
 
-// Removes and returns the value from the head
-size_t remove_from_head(struct linked_list *list) {
-    if (list->head == NULL) return 0;
-
-    struct list_node *del = list->head;
-    size_t retval = del->value;
-    list->head = del->next;
-    free(del);
-    return retval;
+size_t remove_from_head(struct linked_list *list) { 
+  if(list == NULL){
+    return 0;
+  }
+  struct list_node *del = list->head;
+  size_t retval = del->value;
+  list->head = del->next;
+  free(del);
+  
+return retval; 
 }
 
-// Removes and returns the value from the tail
-size_t remove_from_tail(struct linked_list *list) {
-    if (list->head == NULL) return 0;
+size_t remove_from_tail(struct linked_list *list) { 
+  
+  if(list == NULL){
+    return 0;
+  }
 
-    struct list_node *traverse = list->head;
-    struct list_node *prev = NULL;
+  struct list_node *traverse = list->head;
+  struct list_node *trav = NULL;
 
-    while (traverse->next != NULL) {
-        prev = traverse;
-        traverse = traverse->next;
-    }
+  while(list->head != NULL){
+    trav = traverse;
+    traverse = traverse->next;
+  }
+  size_t retval = traverse->value;
+  free(traverse);
+  trav->next = NULL;
+  
+  
+return retval; }
 
-    size_t retval = traverse->value;
-    free(traverse);
-
-    if (prev != NULL) {
-        prev->next = NULL;
-    } else {
-        list->head = NULL;
-    }
-
-    return retval;
-}
-
-// Frees all nodes in the list
-void free_list(struct linked_list *list) {
-    struct list_node *temp;
-    while (list->head != NULL) {
-        temp = list->head;
-        list->head = list->head->next;
-        free(temp);
-    }
-}
+void free_list(struct linked_list list) {
+  struct list_node *temp;
+  while(temp->next != NULL){
+    temp = list.head;
+    list.head = list.head->next;
+    free(temp);
+  }
 
 // Utility function to help you debugging, do not modify
 void dump_list(FILE *fp, struct linked_list list) {
