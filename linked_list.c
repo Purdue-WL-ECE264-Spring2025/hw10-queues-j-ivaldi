@@ -35,7 +35,7 @@ void insert_at_tail(struct linked_list *list, size_t value) {
 }
 
 size_t remove_from_head(struct linked_list *list) { 
-  if(list->head == NULL || list == NULL){
+  if(list == NULL || list->head == NULL){
     return 0;
   }
   struct list_node *del = list->head;
