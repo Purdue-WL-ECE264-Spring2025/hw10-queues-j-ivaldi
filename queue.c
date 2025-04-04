@@ -57,8 +57,9 @@ int number_of_moves(struct game_state start) {
     struct game_state u;
     struct game_state d;
     struct game_state l;
-    struct game_state r; 
+    struct game_state r;  
     struct game_state cur;
+    cur.num_steps == 0;
     
     while (q.data.head != NULL) {
       
@@ -100,8 +101,8 @@ int number_of_moves(struct game_state start) {
             enqueue(&q, r);
             insert_at_tail(&check, serialize(r));
         }
-        if(cur.num_steps > 100){
-            break;
+        if(cur.num_steps > 20){
+            return cur.num_steps;
         }
     }
     return -1;
