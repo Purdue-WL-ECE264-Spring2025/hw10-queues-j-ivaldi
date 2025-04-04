@@ -24,11 +24,11 @@ int beenherebefore(struct linked_list *donehad, struct game_state at) {
 
     while (curcheck != NULL) {
         if (curcheck->value == serq) {
-            return 1;
+            return 0;
         }
         curcheck = curcheck->next;
     }
-    return 0;
+    return 1;
 }
 
 int checkfun(uint64_t expected, struct game_state current){
@@ -71,7 +71,7 @@ int number_of_moves(struct game_state start) {
         
         u = cur;
         move_up(&u);
-        if (beenherebefore(&check, u) == 0) {
+        if (beenherebefore(&check, u)) {
             u.num_steps = cur.num_steps + 1;
             enqueue(&q, u);
             insert_at_tail(&check, serialize(u));
@@ -79,7 +79,7 @@ int number_of_moves(struct game_state start) {
         
         d = cur;
         move_down(&d);
-        if (beenherebefore(&check, d) == 0) {
+        if (beenherebefore(&check, d)) {
             d.num_steps = cur.num_steps + 1;
             enqueue(&q, d);
             insert_at_tail(&check, serialize(d));
@@ -87,7 +87,7 @@ int number_of_moves(struct game_state start) {
         
         l = cur;
         move_left(&l);
-        if (beenherebefore(&check, l) == 0) {
+        if (beenherebefore(&check, l)) {
             l.num_steps = cur.num_steps + 1;
             enqueue(&q, l);
             insert_at_tail(&check, serialize(l));
@@ -95,7 +95,7 @@ int number_of_moves(struct game_state start) {
         
         r = cur;
         move_right(&r);
-        if (beenherebefore(&check, r) == 0) {
+        if (beenherebefore(&check, r)) {
             r.num_steps = cur.num_steps + 1;
             enqueue(&q, r);
             insert_at_tail(&check, serialize(r));
