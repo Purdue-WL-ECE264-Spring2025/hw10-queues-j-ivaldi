@@ -12,11 +12,7 @@ void enqueue(struct queue *q, struct game_state state) {
 }
 struct game_state dequeue(struct queue *q) {
     
-    //struct linked_list del;
-    //del.head = q->data.head;
     uint64_t ser = remove_from_head(&q->data);
-
-    //q->data.head = del.head->next;
     
     
 return deserialize(ser); 
