@@ -28,6 +28,7 @@ void insert_at_tail(struct linked_list *list, size_t value) {
   
   struct list_node *new_node = (struct list_node *)malloc(sizeof(struct list_node));
   new_node->value = value;
+  new_node->next = NULL;
 
   if (list->head == NULL) {
     list->head = new_node;
