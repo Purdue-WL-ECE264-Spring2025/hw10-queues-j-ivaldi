@@ -4,7 +4,7 @@
 #include <string.h>
 
 void enqueue(struct queue *q, struct game_state state) {
-    
+
     uint64_t sernum = serialize(state);
     insert_at_tail(&q->data,sernum);
     
@@ -29,6 +29,27 @@ int checkfun(uint64_t expected, struct game_state current){
     return 0;
 }
 
+int beenherebefore(struct linked_list donehad,struct queue at){
+    struct list_node *curcheck;
+    curcheck = donehad.head;
+
+    struct list_node *traverse = at.data.head;
+  
+    while(at.data.head != NULL){
+      traverse = traverse->next;
+    }
+
+    size_t curval = traverse->value;
+
+    while(curcheck != NULL){
+        if(curval == curcheck->value){
+            return 0;
+        }
+        curcheck = curcheck->next;
+    } 
+    return 1;
+}
+
 int number_of_moves(struct game_state start) {
     struct queue q;
     q.data.head = NULL;
@@ -46,52 +67,43 @@ int number_of_moves(struct game_state start) {
     enqueue(&q, start);
     while (q.data.head != NULL) {
         current = dequeue(&q);
-
         insert_at_head(&check,serialize(current));
+        while(checkfun(corser, current)){
+            if(checkfun(corser, current)){return moves;}
 
-        for (int move = 0; move < 4; move++) {
-            for (int move1 = 0; move1 < 4; move1++) {
-            while(checkfun(corser, current)){
-                if(checkfun(corser, current)){return moves;}
+            prevstate = current;
 
-                prevstate = current;
+            if(serialize(prevstate) != serialize(current) && beenherebefore(check, q)){moves++;}
 
-                if(serialize(prevstate) != serialize(current)){moves++;}
+            prevstate = current;
+            move_up(&current);
 
-                prevstate = current;
-                move_up(&current);
+            if(checkfun(corser, current)){return moves;}
 
-                if(checkfun(corser, current)){return moves;}
+            if(serialize(prevstate) != serialize(current) && beenherebefore(check, q)){insert_at_head(&check, serialize(current)); moves++;}
 
-                if(serialize(prevstate) != serialize(current)){moves++;}
-
-                prevstate = current;
-                move_down(&current);
+            prevstate = current;
+            move_down(&current);
 
 
-                if(checkfun(corser, current)){return moves;}
+            if(checkfun(corser, current)){return moves;}
 
-                if(serialize(prevstate) != serialize(current)){moves++;}
+            if(serialize(prevstate) != serialize(current) && beenherebefore(check, q)){insert_at_head(&check, serialize(current)); moves++;}
 
-                prevstate = current;
-                move_left(&current);
+            prevstate = current;
+            move_left(&current);
 
-                if(checkfun(corser, current)){return moves;}
+            if(checkfun(corser, current)){return moves;}
 
-                if(serialize(prevstate) != serialize(current)){moves++;}
+            if(serialize(prevstate) != serialize(current) && beenherebefore(check, q)){insert_at_head(&check, serialize(current)); moves++;}
 
-                prevstate = current;
-                move_right(&current);
+            prevstate = current;
+            move_right(&current);
 
-                if(checkfun(corser, current)){return moves;}
-            }
-
-            enqueue(&q, current);
-            insert_at_head(&check, serialize(current));
-            }
+            if(checkfun(corser, current)){insert_at_head(&check, serialize(current)); moves++;}
+            moves++;
         }
-        dequeue(&q);
-        moves++;
+        enqueue(&q, current);
     }
     return -1;
 }
