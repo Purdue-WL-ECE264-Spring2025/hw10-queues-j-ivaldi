@@ -1,7 +1,5 @@
 #include "queue.h"
 #include "tile_game.h"
-#include <stdlib.h>
-#include <string.h>
 
 void enqueue(struct queue *q, struct game_state state) {
 
@@ -17,21 +15,26 @@ struct game_state dequeue(struct queue *q) {
     uint64_t ser = remove_from_head(&q->data);
 
     q->data.head = del.head->next;
+    free(del)
     
     
 return deserialize(ser); 
 }
 
-int beenherebefore(struct linked_list *donehad, struct game_state at) {
-    uint64_t serq = serialize(at);
-    struct list_node *curcheck = donehad->head;
-
-    while (curcheck != NULL) {
-        if (curcheck->value == serq) {
-            return 1;
+int beenherebefore(struct linked_list *donehad, struct queue at) {
+    
+    uint64_t serq = serialize(*at);
+  
+    struct list_node *curcheck = visit->head;
+  
+    curcheck = donehad.head;
+  
+    while(curcheck != NULL){
+        if(curcheck->val == serialize(*at)){
+            return 0;
         }
         curcheck = curcheck->next;
-    }
+    } 
     return 0;
 }
 
@@ -67,15 +70,15 @@ int number_of_moves(struct game_state start) {
     while (q.data.head != NULL) {
       
         cur = dequeue(&q);
-        if (checkfun(corser ,cur)) {
+        if (checkfun(corser ,&cur)) {
             free_list(q.data);
             free_list(check);
             return cur.num_steps;
         }
         
         u = cur;
-        move_up(&u);
-        if (beenherebefore(&check, u) == 0) {
+        move_up(&up);
+        if (visited(&check, &up) == 0) {
             u.num_steps = cur.num_steps + 1;
             enqueue(&q, u);
             insert_at_tail(&check, serialize(u));
@@ -83,7 +86,7 @@ int number_of_moves(struct game_state start) {
         
         d = cur;
         move_down(&d);
-        if (beenherebefore(&check, d) == 0) {
+        if (visited(&check, &down) == 0) {
             d.num_steps = cur.num_steps + 1;
             enqueue(&q, d);
             insert_at_tail(&check, serialize(d));
@@ -91,7 +94,7 @@ int number_of_moves(struct game_state start) {
         
         l = cur;
         move_left(&l);
-        if (beenherebefore(&check, l) == 0) {
+        if (visited(&check, &left) == 0) {
             l.num_steps = cur.num_steps + 1;
             enqueue(&q, l);
             insert_at_tail(&check, serialize(l));
@@ -99,7 +102,7 @@ int number_of_moves(struct game_state start) {
         
         r = cur;
         move_right(&r);
-        if (beenherebefore(&check, r) == 0) {
+        if (visited(&check, &r) == 0) {
             r.num_steps = cur.num_steps + 1;
             enqueue(&q, r);
             insert_at_tail(&check, serialize(r));
