@@ -31,14 +31,11 @@ void insert_at_tail(struct linked_list *list, size_t value) {
   while(list->head != NULL){
     traverse = traverse->next;
   }
-  new_node->value = value;
   traverse->next = new_node;
-  new_node->next = NULL;
-  
 }
 
 size_t remove_from_head(struct linked_list *list) { 
-  if(list == NULL){
+  if(list->head == NULL || list == NULL){
     return 0;
   }
   struct list_node *del = list->head;
@@ -51,33 +48,45 @@ return retval;
 
 size_t remove_from_tail(struct linked_list *list) { 
   
-  if(list == NULL){
+  size_t retval;
+  if(list == NULL || list->head == NULL){
     return 0;
   }
-
   struct list_node *traverse = list->head;
-  struct list_node *trav = NULL;
 
-  while(list->head != NULL){
+  if (traverse->next == NULL) {
+    retval = traverse->value;
+    free(traverse);
+    list->head = NULL;
+    return retval;
+  }
+
+  struct list_node *trav = NULL;
+  while(traverse->next != NULL){
     trav = traverse;
     traverse = traverse->next;
   }
-  size_t retval = traverse->value;
+  retval = traverse->value;
   free(traverse);
   trav->next = NULL;
   
   
-return retval; }
+return retval;
+}
 
 void free_list(struct linked_list list) {
   struct list_node *temp;
+
+  struct list_node *at;
+
+  temp = list.head;
   while(temp->next != NULL){
-    temp = list.head;
-    list.head = list.head->next;
-    free(temp);
+    at = temp;
+    temp = temp->next;
+    free(at);
   }
 
-
+  list.head = NULL;
 }
 
 // Utility function to help you debugging, do not modify
