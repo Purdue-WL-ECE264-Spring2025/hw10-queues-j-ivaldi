@@ -2,7 +2,16 @@
 
 #include <stdlib.h>
 
-struct list_node *new_node(size_t value) { return NULL; 
+struct list_node *new_node(size_t value) { 
+  struct list_node *newnode = malloc(sizeof(struct list_node));
+  
+  if (newnode == NULL) {
+    return NULL;
+  }
+  
+  newnode->value = value;
+  newnode->next = NULL;
+  return newnode; 
 }
 
 void insert_at_head(struct linked_list *list, size_t value) {
