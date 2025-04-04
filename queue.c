@@ -2,110 +2,93 @@
 #include "tile_game.h"
 
 void enqueue(struct queue *q, struct game_state state) {
-
-    uint64_t sernum = serialize(state);
-    insert_at_tail(&q->data,sernum);
-    
-
+    uint64_t serial = serialize(state);
+    insert_at_tail(&q->data, serial);
 }
+
 struct game_state dequeue(struct queue *q) {
-    
-    struct linked_list del;
-    del.head = q->data.head;
-    uint64_t ser = remove_from_head(&q->data);
-
-    q->data.head = del.head->next;
-    free(del)
-    
-    
-return deserialize(ser); 
+    uint64_t serial = remove_from_head(&q->data);
+    return deserialize(serial);
 }
 
-int beenherebefore(struct linked_list *donehad, struct queue at) {
-    
-    uint64_t serq = serialize(*at);
-  
-    struct list_node *curcheck = visit->head;
-  
-    curcheck = donehad.head;
-  
-    while(curcheck != NULL){
-        if(curcheck->val == serialize(*at)){
-            return 0;
+int visited(struct linked_list *visit, struct game_state *state) {
+    uint64_t serial = serialize(*state);
+    struct list_node *cur = visit->head;
+    while (cur != NULL) {
+        if (cur->value == serial) {
+            return 1;
         }
-        curcheck = curcheck->next;
-    } 
-    return 0;
-}
-
-int checkfun(uint64_t expected, struct game_state current){
-    if(serialize(current) == expected) {
-        return 1;
+        cur = cur->next;
     }
     return 0;
 }
 
+int solved(struct game_state *state) {
+    uint8_t solve[4][4] = {
+        {1, 2, 3, 4},
+        {5, 6, 7, 8},
+        {9, 10, 11, 12},
+        {13, 14, 15, 0}
+    };
+    
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (state->tiles[i][j] != solve[i][j]) {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
 int number_of_moves(struct game_state start) {
     struct queue q;
-    q.data.head = NULL;
+    q.data.head = NULL; // Initialize queue
     
-    struct linked_list check;
-    check.head = NULL;
+    struct linked_list visit;
+    visit.head = NULL; // Initialize visited linked list
     
-    enqueue(&q, start);
-    insert_at_tail(&check, serialize(start));
-    struct game_state correct; 
-    uint8_t cortiles[4][4] = {{1,2,3,4},
-                               {5,6,7,8},
-                               {9,10,11,12},
-                               {13,14,15,0}};
-    memcpy(correct.tiles, cortiles, sizeof(correct.tiles));
-    uint64_t corser = serialize(correct);
-    struct game_state u;
-    struct game_state d;
-    struct game_state l;
-    struct game_state r; 
-    struct game_state cur;
+    enqueue(&q, start); // Initial state
+    insert_at_tail(&visit, serialize(start)); // Starting state is visited
     
     while (q.data.head != NULL) {
-      
-        cur = dequeue(&q);
-        if (checkfun(corser ,&cur)) {
+        struct game_state cur = dequeue(&q);
+        if (solved(&cur)) {
             free_list(q.data);
-            free_list(check);
+            free_list(visit);
             return cur.num_steps;
         }
         
-        u = cur;
+        struct game_state up = cur;
         move_up(&up);
-        if (visited(&check, &up) == 0) {
-            u.num_steps = cur.num_steps + 1;
-            enqueue(&q, u);
-            insert_at_tail(&check, serialize(u));
+        if (visited(&visit, &up) == 0) {
+            up.num_steps = cur.num_steps + 1;
+            enqueue(&q, up);
+            insert_at_tail(&visit, serialize(up));
         }
         
-        d = cur;
-        move_down(&d);
-        if (visited(&check, &down) == 0) {
-            d.num_steps = cur.num_steps + 1;
-            enqueue(&q, d);
-            insert_at_tail(&check, serialize(d));
+        struct game_state down = cur;
+        move_down(&down);
+        if (visited(&visit, &down) == 0) {
+            down.num_steps = cur.num_steps + 1;
+            enqueue(&q, down);
+            insert_at_tail(&visit, serialize(down));
         }
         
-        l = cur;
-        move_left(&l);
-        if (visited(&check, &left) == 0) {
-            l.num_steps = cur.num_steps + 1;
-            enqueue(&q, l);
-            insert_at_tail(&check, serialize(l));
+        struct game_state left = cur;
+        move_left(&left);
+        if (visited(&visit, &left) == 0) {
+            left.num_steps = cur.num_steps + 1;
+            enqueue(&q, left);
+            insert_at_tail(&visit, serialize(left));
         }
         
-        r = cur;
-        move_right(&r);
-        if (visited(&check, &r) == 0) {
-            r.num_steps = cur.num_steps + 1;
-            enqueue(&q, r);
-            insert_at_tail(&check, serialize(r));
+        struct game_state right = cur;
+        move_right(&right);
+        if (visited(&visit, &right) == 0) {
+            right.num_steps = cur.num_steps + 1;
+            enqueue(&q, right);
+            insert_at_tail(&visit, serialize(right));
         }
     }
     return -1;
