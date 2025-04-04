@@ -8,7 +8,7 @@ struct list_node *new_node(size_t value) { return NULL;
 void insert_at_head(struct linked_list *list, size_t value) {
   
   struct list_node *new_node = (struct list_node *)malloc(sizeof(struct list_node));
-  //new_node->value = value;
+  new_node->value = value;
   new_node->next = list->head;
   list->head = new_node;
 
