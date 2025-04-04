@@ -1,7 +1,5 @@
 #include "queue.h"
 #include "tile_game.h"
-#include <stdlib.h>
-#include <string.h>
 
 void enqueue(struct queue *q, struct game_state state) {
 
@@ -10,7 +8,6 @@ void enqueue(struct queue *q, struct game_state state) {
     
 
 }
-
 struct game_state dequeue(struct queue *q) {
     
     struct linked_list del;
@@ -18,10 +15,29 @@ struct game_state dequeue(struct queue *q) {
     uint64_t ser = remove_from_head(&q->data);
 
     q->data.head = del.head->next;
+    free(del)
     
     
 return deserialize(ser); 
 }
+
+int beenherebefore(struct linked_list *donehad, struct queue at) {
+    
+    uint64_t serq = serialize(*at);
+  
+    struct list_node *curcheck = visit->head;
+  
+    curcheck = donehad.head;
+  
+    while(curcheck != NULL){
+        if(curcheck->val == serialize(*at)){
+            return 0;
+        }
+        curcheck = curcheck->next;
+    } 
+    return 0;
+}
+
 int checkfun(uint64_t expected, struct game_state current){
     if(serialize(current) == expected) {
         return 1;
@@ -29,81 +45,68 @@ int checkfun(uint64_t expected, struct game_state current){
     return 0;
 }
 
-int beenherebefore(struct linked_list donehad,struct queue at){
-    struct list_node *curcheck;
-    curcheck = donehad.head;
-
-    struct list_node *traverse = at.data.head;
-  
-    while(at.data.head != NULL){
-      traverse = traverse->next;
-    }
-
-    size_t curval = traverse->value;
-
-    while(curcheck != NULL){
-        if(curval == curcheck->value){
-            return 0;
-        }
-        curcheck = curcheck->next;
-    } 
-    return 1;
-}
-
 int number_of_moves(struct game_state start) {
     struct queue q;
     q.data.head = NULL;
+    
     struct linked_list check;
-    struct game_state current;
+    check.head = NULL;
+    
+    enqueue(&q, start);
+    insert_at_tail(&check, serialize(start));
     struct game_state correct; 
-    struct game_state prevstate;
-    int moves = 0;
     uint8_t cortiles[4][4] = {{1,2,3,4},
                                {5,6,7,8},
                                {9,10,11,12},
                                {13,14,15,0}};
     memcpy(correct.tiles, cortiles, sizeof(correct.tiles));
     uint64_t corser = serialize(correct);
-    enqueue(&q, start);
+    struct game_state u;
+    struct game_state d;
+    struct game_state l;
+    struct game_state r; 
+    struct game_state cur;
+    
     while (q.data.head != NULL) {
-        current = dequeue(&q);
-        insert_at_head(&check,serialize(current));
-        while(checkfun(corser, current)){
-            if(checkfun(corser, current)){return moves;}
-
-            prevstate = current;
-
-            if(serialize(prevstate) != serialize(current) && beenherebefore(check, q)){moves++;}
-
-            prevstate = current;
-            move_up(&current);
-
-            if(checkfun(corser, current)){return moves;}
-
-            if(serialize(prevstate) != serialize(current) && beenherebefore(check, q)){insert_at_head(&check, serialize(current)); moves++;}
-
-            prevstate = current;
-            move_down(&current);
-
-
-            if(checkfun(corser, current)){return moves;}
-
-            if(serialize(prevstate) != serialize(current) && beenherebefore(check, q)){insert_at_head(&check, serialize(current)); moves++;}
-
-            prevstate = current;
-            move_left(&current);
-
-            if(checkfun(corser, current)){return moves;}
-
-            if(serialize(prevstate) != serialize(current) && beenherebefore(check, q)){insert_at_head(&check, serialize(current)); moves++;}
-
-            prevstate = current;
-            move_right(&current);
-
-            if(checkfun(corser, current)){insert_at_head(&check, serialize(current)); moves++;}
-            moves++;
+      
+        cur = dequeue(&q);
+        if (checkfun(corser ,&cur)) {
+            free_list(q.data);
+            free_list(check);
+            return cur.num_steps;
         }
-        enqueue(&q, current);
+        
+        u = cur;
+        move_up(&up);
+        if (visited(&check, &up) == 0) {
+            u.num_steps = cur.num_steps + 1;
+            enqueue(&q, u);
+            insert_at_tail(&check, serialize(u));
+        }
+        
+        d = cur;
+        move_down(&d);
+        if (visited(&check, &down) == 0) {
+            d.num_steps = cur.num_steps + 1;
+            enqueue(&q, d);
+            insert_at_tail(&check, serialize(d));
+        }
+        
+        l = cur;
+        move_left(&l);
+        if (visited(&check, &left) == 0) {
+            l.num_steps = cur.num_steps + 1;
+            enqueue(&q, l);
+            insert_at_tail(&check, serialize(l));
+        }
+        
+        r = cur;
+        move_right(&r);
+        if (visited(&check, &r) == 0) {
+            r.num_steps = cur.num_steps + 1;
+            enqueue(&q, r);
+            insert_at_tail(&check, serialize(r));
+        }
     }
     return -1;
 }
