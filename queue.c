@@ -59,7 +59,7 @@ int number_of_moves(struct game_state start) {
     struct game_state l;
     struct game_state r;  
     struct game_state cur;
-    cur.num_steps == 0;
+    cur.num_steps = 0;
     
     while (q.data.head != NULL) {
       
