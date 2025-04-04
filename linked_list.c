@@ -8,7 +8,7 @@ struct list_node *new_node(size_t value) { return NULL;
 void insert_at_head(struct linked_list *list, size_t value) {
   
   struct list_node *new_node = (struct list_node *)malloc(sizeof(struct list_node));
-  new_node->value = value;
+  //new_node->value = value;
   new_node->next = list->head;
   list->head = new_node;
 
@@ -54,21 +54,14 @@ size_t remove_from_tail(struct linked_list *list) {
   }
   struct list_node *traverse = list->head;
 
-  if (traverse->next == NULL) {
-    retval = traverse->value;
-    free(traverse);
-    list->head = NULL;
-    return retval;
-  }
-
-  struct list_node *trav = NULL;
-  while(traverse->next != NULL){
-    trav = traverse;
+  if (traverse->next->next == NULL) {
     traverse = traverse->next;
   }
-  retval = traverse->value;
+
+  struct list_node *returns = traverse->next;
+  retval = returns->value;
   free(traverse);
-  trav->next = NULL;
+  returns->next = NULL;
   
   
 return retval;
@@ -76,14 +69,13 @@ return retval;
 
 void free_list(struct linked_list list) {
   struct list_node *temp;
-
   struct list_node *at;
 
   temp = list.head;
-  while(temp->next != NULL){
-    at = temp;
-    temp = temp->next;
-    free(at);
+  while(temp != NULL){
+    at = temp->next;
+    free(temp);
+    temp = at;
   }
 
   list.head = NULL;
