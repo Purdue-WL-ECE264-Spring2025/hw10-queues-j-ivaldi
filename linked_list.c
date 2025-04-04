@@ -54,17 +54,23 @@ size_t remove_from_tail(struct linked_list *list) {
   }
   struct list_node *traverse = list->head;
 
-  if (traverse->next->next == NULL) {
-    traverse = traverse->next;
+  if (traverse->next == NULL) {
+      retval = traverse->value;
+      free(traverse);
+      list->head = NULL;
+      return retval;
   }
 
-  struct list_node *returns = traverse->next;
-  retval = returns->value;
+  struct list_node *travel = NULL;
+  while (traverse->next != NULL) {
+      travel = traverse;
+      traverse = traverse->next;
+  }
+  retval = traverse->value;
   free(traverse);
-  returns->next = NULL;
-  
-  
-return retval;
+  travel->next = NULL;
+  return retval;
+
 }
 
 void free_list(struct linked_list list) {
