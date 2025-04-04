@@ -28,7 +28,7 @@ void insert_at_tail(struct linked_list *list, size_t value) {
 
 
   struct list_node *traverse = list->head;
-  while(list->head != NULL){
+  while(traverse->next != NULL){
     traverse = traverse->next;
   }
   traverse->next = new_node;
